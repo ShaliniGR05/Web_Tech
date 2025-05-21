@@ -1,0 +1,201 @@
+
+<!--SHALINI-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Order / Donate Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 40px;
+    }
+    form {
+      background: #fff;
+      padding: 25px;
+      width: 600px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    table {
+      width: 1000px;
+      margin: 40px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #28a745;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="bookForm">
+    <h1>Book Order / Donate Form</h1>
+
+    <label for="customerName">Customer Name:</label>
+    <input type="text" id="customerName" name="customerName" required>
+
+    <label for="type">Type:</label>
+    <select id="type" name="type" required>
+      <option value="">--Select--</option>
+      <option value="Order">Order</option>
+      <option value="Donate">Donate</option>
+    </select>
+
+    <label for="bookName">Book Name:</label>
+    <input type="text" id="bookName" name="bookName" required>
+
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author">
+
+    <label for="quantity">Quantity (for Order):</label>
+    <input type="number" id="quantity" name="quantity">
+
+    <label for="condition">Condition (for Donate):</label>
+    <input type="text" id="condition" name="condition">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone">
+
+    <label for="address">Address:</label>
+    <textarea id="address" name="address"></textarea>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <table id="bookTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Book</th>
+        <th>Author</th>
+        <th>Qty</th>
+        <th>Condition</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('bookForm');
+    const tableBody = document.querySelector('#bookTable tbody');
+
+    const loadEntries = async () => {
+      tableBody.innerHTML = '';
+      const res = await fetch('/api/entries');
+      const data = await res.json();
+      data.forEach(entry => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${entry.customerName}</td>
+          <td>${entry.type}</td>
+          <td>${entry.bookName}</td>
+          <td>${entry.author || '-'}</td>
+          <td>${entry.quantity || '-'}</td>
+          <td>${entry.condition || '-'}</td>
+          <td>${entry.email || '-'}</td>
+          <td>${entry.phone || '-'}</td>
+          <td>${entry.address || '-'}</td>
+          <td><button class="delete-btn" onclick="deleteEntry('${entry._id}')">Delete</button></td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    };
+
+    loadEntries();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const jsonData = {};
+      formData.forEach((val, key) => jsonData[key] = val);
+
+      const res = await fetch('/api/entries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jsonData)
+      });
+
+      if (res.ok) {
+        form.reset();
+        loadEntries();
+      } else {
+        const msg = await res.text();
+        alert('Error: ' + msg);
+      }
+    });
+
+    const deleteEntry = async (id) => {
+      if (confirm('Are you sure you want to delete this record?')) {
+        const res = await fetch('/api/entries/' + id, { method: 'DELETE' });
+        if (res.ok) {
+          loadEntries();
+        } else {
+          alert('Failed to delete');
+        }
+      }
+    };
+  </script>
+</body>
+</html>  
