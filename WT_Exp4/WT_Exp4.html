@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Bill Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url("hotel.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+    .container {
+      background: rgba(171, 167, 167, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    select, input[type="number"] {
+      margin-top: 5px;
+      padding: 5px;
+      width: 100%;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      background-color: #262d35;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Hotel Bill Calculator</h2>
+    <label>Room Type:
+      <select id="roomType">
+        <option value="100">Standard - $100/day</option>
+        <option value="200">Deluxe - $200/day</option>
+        <option value="300">Suite - $300/day</option>
+      </select>
+    </label>
+    <label>Number of Rooms:
+      <input type="number" id="numRooms" min="1" />
+    </label>
+    <label>Number of Days:
+      <input type="number" id="numDays" min="1" />
+    </label>
+    <label>Do you need food?
+      <select id="needFood">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </label>
+    <div id="foodOptions" style="display:none">
+      <label>Number of Days for Food:
+        <input type="number" id="foodDays" min="1" />
+      </label>
+      <label>Breakfast:
+        <select id="breakfast">
+          <option value="0">None</option>
+          <option value="20">Veg - $20</option>
+          <option value="30">Non-Veg - $30</option>
+        </select>
+      </label>
+      <label>Lunch:
+        <select id="lunch">
+          <option value="0">None</option>
+          <option value="50">Veg - $50</option>
+          <option value="70">Non-Veg - $70</option>
+        </select>
+      </label>
+      <label>Dinner:
+        <select id="dinner">
+          <option value="0">None</option>
+          <option value="60">Veg - $60</option>
+          <option value="80">Non-Veg - $80</option>
+        </select>
+      </label>
+    </div>
+    <label class="checkbox-label">
+      <input type="checkbox" id="refreshments" />
+      Daily Refreshments ($10/day)
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" id="laundry" />
+      Laundry Service ($5/day)
+    </label>
+    <button onclick="calculateBill()">Calculate Bill</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById("needFood").addEventListener("change", function () {
+      document.getElementById("foodOptions").style.display = this.value === "yes" ? "block" : "none";
+    });
+
+    function calculateBill() {
+      const roomRate = parseInt(document.getElementById("roomType").value);
+      const numRooms = parseInt(document.getElementById("numRooms").value) || 0;
+      const numDays = parseInt(document.getElementById("numDays").value) || 0;
+      const needFood = document.getElementById("needFood").value === "yes";
+      const refreshment = document.getElementById("refreshments").checked;
+      const laundry = document.getElementById("laundry").checked;
+
+      let roomBill = roomRate * numRooms * numDays;
+
+      let foodBill = 0;
+      if (needFood) {
+        const foodDays = parseInt(document.getElementById("foodDays").value) || 0;
+        const breakfast = parseInt(document.getElementById("breakfast").value);
+        const lunch = parseInt(document.getElementById("lunch").value);
+        const dinner = parseInt(document.getElementById("dinner").value);
+
+        foodBill += (breakfast + lunch + dinner) * foodDays * numRooms;
+      }
+
+      if (refreshment) {
+        foodBill += 10 * numDays * numRooms;
+      }
+
+      if (laundry) {
+        foodBill += 5 * numDays * numRooms;
+      }
+
+      const totalBill = roomBill + foodBill;
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Room Bill:</strong> $${roomBill}</p>
+        <p><strong>Food & Services Bill:</strong> $${foodBill}</p>
+        <p><strong>Total Bill:</strong> $${totalBill}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
