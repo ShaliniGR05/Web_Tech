@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wizard Book Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0c3fc, #8ec5fc);
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #4b0082;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar .brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .navbar .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #ffcc00;
+    }
+
+    /* Welcome Message */
+    .welcome {
+      text-align: center;
+      margin: 50px 0 30px;
+    }
+
+    .welcome h1 {
+      font-size: 2.5rem;
+      color: #2e004f;
+      text-shadow: 2px 2px 4px #ccc;
+    }
+
+    /* Book Images Row */
+    .book-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .book-row img {
+      width: 180px;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .book-row img:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #12140f;
+      color: #fff;
+    }
+
+    /* Donation Form */
+    .donation-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 25px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .donation-form h2 {
+      color: #4b0082;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      background-color: #4b0082;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #5a1a9a;
+    }
+
+    /* Donation Display */
+    .donation-display {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 25px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .donation-display h2 {
+      color: #4b0082;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .donation-item {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .donation-item:last-child {
+      border-bottom: none;
+    }
+
+    .donation-item p {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    .donation-item strong {
+      color: #4b0082;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="brand">Wizard Store</div>
+    <div class="nav-links">
+      <a href="#about">About Us</a>
+      <a href="#" id="donate-link">Donate Books</a>
+      <a href="#shop">Shop</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+
+  <!-- Welcome Text -->
+  <div class="welcome">
+    <h1>Welcome to Wizard Book Store!!</h1>
+  </div>
+
+  <!-- Donation Form (Initially hidden) -->
+  <div id="donation-form-container" class="donation-container hidden">
+    <form id="donation-form" class="donation-form" action="/donate" method="POST">
+      <h2>Book Donation Form</h2>
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" required>
+      </div>
+      <div class="form-group">
+        <label for="contact">Email or Phone Number</label>
+        <input type="text" id="contact" name="contact" required>
+      </div>
+      <div class="form-group">
+        <label for="bookTitles">Book Title(s)</label>
+        <textarea id="bookTitles" name="bookTitles" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="condition">Condition of Books</label>
+        <select id="condition" name="condition" required>
+          <option value="">Select condition</option>
+          <option value="New">New</option>
+          <option value="Gently Used">Gently Used</option>
+          <option value="Old">Old</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="deliveryPreference">Pickup/Drop-off Preference</label>
+        <select id="deliveryPreference" name="deliveryPreference" required>
+          <option value="">Select option</option>
+          <option value="Pickup">Pickup</option>
+          <option value="Drop-off">Drop-off</option>
+          <option value="Shipping">Shipping</option>
+        </select>
+      </div>
+      <button type="submit" class="submit-btn">Submit Donation</button>
+    </form>
+  </div>
+
+  <!-- Donation Display (Initially hidden) -->
+  <div id="donation-display" class="donation-display hidden">
+    <h2>Thank You for Your Donation!</h2>
+    <div id="donation-items"></div>
+  </div>
+  <br><br><br><br>
+  <!-- Book Images -->
+  <div class="book-row">
+    <img src="img1.jpeg" alt="Book 1">
+    <img src="img2.jpeg" alt="Book 2">
+    <img src="img3.jpeg" alt="Book 3">
+    <img src="img4.jpeg" alt="Book 4">
+  </div>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <footer id="footer">
+    <p>Questions? Email us at <a href="mailto:contact@wizardstore.com" style="color: #fff;">contact@wizardstore.com</a></p>
+  </footer>
+
+  <script>
+    // Handle donation link click
+    document.getElementById('donate-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('donation-form-container').classList.remove('hidden');
+      document.getElementById('donation-display').classList.add('hidden');
+    });
+
+    // Fetch and display donations when page loads
+    window.addEventListener('load', function() {
+      fetch('/donations')
+        .then(response => response.json())
+        .then(donations => {
+          if (donations.length > 0) {
+            const donationItems = document.getElementById('donation-items');
+            donationItems.innerHTML = '';
+            
+            donations.forEach(donation => {
+              const donationElement = document.createElement('div');
+              donationElement.className = 'donation-item';
+              donationElement.innerHTML = `
+                <p><strong>Name:</strong> ${donation.fullName}</p>
+                <p><strong>Contact:</strong> ${donation.contact}</p>
+                <p><strong>Books:</strong> ${donation.bookTitles}</p>
+                <p><strong>Condition:</strong> ${donation.condition}</p>
+                <p><strong>Delivery:</strong> ${donation.deliveryPreference}</p>
+                <p><strong>Date:</strong> ${donation.date}</p>
+              `;
+              donationItems.appendChild(donationElement);
+            });
+
+            document.getElementById('donation-display').classList.remove('hidden');
+          }
+        });
+    });
+  </script>
+</body>
+</html>
